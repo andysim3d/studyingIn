@@ -1,6 +1,6 @@
 <?php
 
-class User {
+class studyingIn_Model_User {
 
 	/**
 	 * @var int
