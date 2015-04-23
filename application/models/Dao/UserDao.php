@@ -4,6 +4,12 @@ class studyingIn_Model_UserDao extends Zend_Db_Table_Abstract {
 
 	protected $_name = "studyingIn_user";
 
+	/**
+	 * create a new user into database
+	 *
+	 * @param array
+	 * @return bool
+	 */
 	public function createUser($userData) {
 
 		$row = $this->createRow();
@@ -33,6 +39,11 @@ class studyingIn_Model_UserDao extends Zend_Db_Table_Abstract {
 		}
 	}
 
+	/**
+	 * make the salt
+	 *
+	 * @return string
+	 */
 	public function _generateSalt16() {
 
 		$chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -45,6 +56,13 @@ class studyingIn_Model_UserDao extends Zend_Db_Table_Abstract {
 		return $str;
 	}
 
+	/**
+	 *encrypt the password using sha256
+	 *
+	 * @param 1: string $password
+	 * @param 2: string $salt
+	 * @return string $user_salted_password after encryption
+	 */
 	public function _encryptPassword($password, $salt) {
 
 		$user_salted_password = hash('sha256', $password . $salt);
