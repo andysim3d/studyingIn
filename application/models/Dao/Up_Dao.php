@@ -1,5 +1,14 @@
 <?php
 
+/**
+* Up_Dao.php:	Dao for table 'up_vote'.
+* Could access table, create tuple, delete tuple, query all tuples 
+* by user or uuid.
+*
+* By Pengfei Zhang.
+* Apr. 25. 2015
+*/
+
 class studyingIn_Model_Up_Dao extends Zend_Db_Table_Abstract {
 
 	protected $_name = "up_vote";
