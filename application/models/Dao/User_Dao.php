@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *
+ * @author Zhengwei
+ *
+ */
+
 class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 
 	protected $_name = "studyingIn_user";
@@ -62,11 +68,11 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	/**
 	 * update user information
 	 *
-	 * @param 1: array where(id/uuid)
-	 * @param 2: array new data
+	 * @param 1: array new data
+	 * @param 2: array where(id/uuid)
 	 * @return bool
 	 */
-	public function update_user($where, $newdata) {
+	public function update_user($newdata, $where) {
 
 		$where_cluster;
 		if (is_numeric($where)) {
@@ -93,7 +99,7 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 			'user_actived' => 1,
 		);
 
-		return $this->update_user($user_id, $newdata);
+		return $this->update_user($newdata, $user_id);
 	}
 
 	/**
@@ -108,7 +114,7 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 			'user_actived' => 0,
 		);
 
-		return $this->update_user($user_id, $newdata);
+		return $this->update_user($newdata, $user_id);
 	}
 
 	/**

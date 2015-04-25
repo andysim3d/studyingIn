@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *
+ * @author Zhengwei
+ *
+ */
+
 class studyingIn_Form_User extends Zend_Form {
 
 	public function init() {
@@ -23,7 +29,7 @@ class studyingIn_Form_User extends Zend_Form {
 		           ->addFilter('StringTrim')
 		           ->addFilter('StripTags')
 		           ->addFilter('StringtoLower')
-		           ->addValidator('EmailAddress')
+		           ->addValidator('EmailAddress');
 
 		//salt
 		$salt = $this->createElement('text', 'salt');
@@ -33,13 +39,13 @@ class studyingIn_Form_User extends Zend_Form {
 		$user_password->setLabel('密码: ')
 		              ->setRequired(true)
 		              ->addFilter('StringTrim')
-		              ->addValidator('stringLength', false, array(6))
+		              ->addValidator('stringLength', false, array(6));
 
 		//confirm_password
 		$confirm_password = $this->createElement('password', 'confirm_password');
 		$confirm_password->setLabel('确认密码: ')
 		                 ->setRequired(true)
-		                 ->addValidator('identical', false, array('token' => 'user_password'))
+		                 ->addValidator('identical', false, array('token' => 'user_password'));
 
 		//user_school
 		$user_school = $this->createElement('select', 'user_school');
@@ -58,7 +64,11 @@ class studyingIn_Form_User extends Zend_Form {
 			1 => '已激活',
 		));
 
-		//$user_remember = $this->createElement('checkbox','user_remember');
+		//user_remember
+		$user_remember = $this->createElement('checkbox', 'user_remember');
+
+		//captcha
+		$captcha = $this->createElement('checkbox', 'user_remember');
 
 		//submit
 		$submit = $this->createElement('submit', 'submit');
@@ -73,7 +83,7 @@ class studyingIn_Form_User extends Zend_Form {
 			$confirm_password,
 			$user_school,
 			$user_actived,
-			//$user_remember,
+			$user_remember,
 			$submit,
 		));
 
