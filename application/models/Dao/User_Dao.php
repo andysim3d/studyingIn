@@ -82,7 +82,6 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 		if (is_string($where)) {
 			$where_cluster = $this->getAdapter()->quoteInto('user_uuid =?', $where);
 		}
-		print $where_cluster;
 
 		$row = $this->update($newdata, $where_cluster);
 	}
