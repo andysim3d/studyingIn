@@ -1,5 +1,11 @@
 <?php
 
+/**
+ *
+ * @author Zhengwei
+ *
+ */
+
 class Email_Sender {
 
 	public function sendActivationEmail($name, $email, $code) {
