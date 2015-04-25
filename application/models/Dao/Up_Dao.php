@@ -9,7 +9,7 @@
 * Apr. 25. 2015
 */
 
-class studyingIn_Model_Up_Dao extends Zend_Db_Table_Abstract {
+class StudyingIn_Model_Up_Dao extends Zend_Db_Table_Abstract {
 
 	protected $_name = "up_vote";
 
@@ -159,11 +159,24 @@ class studyingIn_Model_Up_Dao extends Zend_Db_Table_Abstract {
 
 
 	public function test(){
+
+		$query['user_id'] = 1;
+		$query['uuid'] = 2;
 		
+		$where = array();
+		 $sele = $this->select();//->query();//->quoteInto();
+		foreach ($query as $key => $value) {
+			# code...
+			$where[$key."= ? "] = $value;
+			$sele = $sele->where("$key = ? ", $value);
+		}
+		print_r($where);
+		// $sele  = $this->select()->where("user_id = ? " , "1") -> where(" uuid = ? ", "2");
+		print $sele;
 		$user['user_id'] = 1;
 		$uuid = 1000;
 		$vote['up_vote_id'] = 1000005;
-		$this->create_vote($user, $uuid);
+		print_r($this->create_vote($user, $uuid));
 		//$this->delete_vote_by_id($vote);
 	}
 
