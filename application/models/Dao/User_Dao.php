@@ -27,7 +27,6 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 			}
 
 			$row->save();
-			//print_r($row);
 			return $row->user_id;
 
 		} else {
