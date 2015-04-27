@@ -86,9 +86,9 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 
 		if ($row) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
+		
 	}
 
 	/**
