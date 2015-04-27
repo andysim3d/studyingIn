@@ -228,6 +228,12 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 		}
 	}
 
+
+	/**
+	*	Delete Action.
+	*
+	*
+	*/
 	private function delete_row($query_data){
 
 		$row = $this->delete($query_data);
