@@ -6,7 +6,7 @@
  *
  */
 
-class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
+class StudyingIn_Model_User_Relation_Dao extends Zend_Db_Table_Abstract {
 
 	protected $_name = "studyingIn_user_relation";
 
@@ -20,9 +20,9 @@ class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
 
 		$row = $this->createRow();
 
-		if (count($userData) > 0) {
+		if (count($user_relation) > 0) {
 
-			foreach ($userData as $key => $value) {
+			foreach ($user_relation as $key => $value) {
 				$row->$key = $value;
 			}
 
@@ -35,16 +35,19 @@ class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
 	}
 
 	/**
-	 * get user's following
+	 * get user's relation
 	 *
-	 * @param album_id/array
-	 * @return $album/null
+	 * @param array
+	 * @return $row/null
 	 */
-	public function get_user_following($user_id) {
-
+	private function get_user_relation($where) {
+		//echo "string";
+		//print_r($where);
 		$select = $this->select();
 		if (count($where) > 0) {
-			$this->where("user")
+			foreach ($where as $key => $value) {
+				$select->where($key . '=?', $value);
+			}
 		}
 		$row = $this->fetchAll($select);
 
@@ -56,40 +59,42 @@ class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
 	}
 
 	/**
-	 * update user's album information
+	 * get user's following
 	 *
-	 * @param 1: array new data
-	 * @param 2: array where(album_id/album_uuid)
-	 * @return bool
+	 * @param follower's id
+	 * @return $row/null
 	 */
-	public function update_user_album($new_data, $where) {
+	public function get_user_following($follower_id) {
 
-		$where_cluster;
-		if (is_numeric($where)) {
-			$where_cluster = $this->getAdapter()->quoteInto('album_id =?', $where);
-			//print("11");
-		}
-		if (is_string($where)) {
-			$where_cluster = $this->getAdapter()->quoteInto('album_uuid =?', $where);
-		}
+		$where = array('follower_id' => $follower_id);
 
-		$row = $this->update($new_data, $where_cluster);
+		return $this->get_user_relation($where);
+	}
+
+	/**
+	 * get user's follower
+	 *
+	 * @param follower's id
+	 * @return $row/null
+	 */
+	public function get_user_follower($following_id) {
+
+		$where = array('following_id' => $following_id);
+
+		return $this->get_user_relation($where);
 	}
 
 	/**
 	 * delete user's album
 	 *
-	 * @param int/string/array
+	 * @param relation_id/array('following_id'=>1,'folower_id'=>2);
 	 * @return bool
 	 */
-	public function delete_user($where) {
+	public function delete_relation($where) {
 
 		$where_cluster;
 		if (is_numeric($where)) {
-			$where_cluster = $this->getAdapter()->quoteInto('album_id =?', $where);
-		}
-		if (is_string($where)) {
-			$where_cluster = $this->getAdapter()->quoteInto('album_uuid =?', $where);
+			$where_cluster = $this->getAdapter()->quoteInto('relation_id =?', $where);
 		}
 
 		if (is_array($where)) {
