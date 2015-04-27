@@ -67,7 +67,7 @@ class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
 	 * update user's album information
 	 *
 	 * @param 1: array new data
-	 * @param 2: array where(album_id/album_uuid)
+	 * @param 2: where(album_id/album_uuid)
 	 * @return bool
 	 */
 	public function update_user_album($new_data, $where) {
