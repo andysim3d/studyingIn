@@ -152,6 +152,27 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 		}
 		return $res;
 	}
+
+
+
+
+	//private function
+	/**
+	*	@param: $uuid: uuid used to identify it.
+	*	@param: $new
+	*
+	*	@return bool: True on success otherwise failed.
+	*/
+	private function update_row($uuid, $new_data){
+
+		$where_cluster = $this->getAdapter()->quoteInto('blog_uuid =?', $uuid);
+
+ 		$row = $this->update($new_data, $where_cluster);
+
+ 		//return 
+ 		
+	}
+	
 	
 
 
