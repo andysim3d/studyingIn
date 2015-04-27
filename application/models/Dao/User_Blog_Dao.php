@@ -54,15 +54,35 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 		$row['blog_uuid'] = "blog-".UUID::v4();
 		$row['blog_post_date'] = date("Y-m-d H:i:s",time());
 		if(!isset($row['blog_privilege'])){
-			//0 as public, 
-			//1 as only follower could read
-			//2 as double follow could read
-			//3 as only author couod read.
-			$row['blog_privilege'] = 0;
+			//1 as public, 
+			//2 as only follower could read
+			//3 as double follow could read
+			//4 as only author couod read.
+			$row['blog_privilege'] = 1;
 
 		}
 		// print_r($row);
-		 $res =  $row->save();
+		$res =  $row->save();
+		return $res;
+	}
+
+	/**
+	*
+	*
+	*
+	*
+	*/
+
+	private function get_blogs($data , $limit = -1){
+		$query = $this->select();
+		foreach ($$data as $key => $value) {
+			$query = $query->where('$key = ? ', $value);
+		}
+		if ($limit != -1) {
+			$query = $query->limit($limit);
+		}
+		$res = $this->fetchAll($query);
+
 		return $res;
 	}
 
@@ -71,13 +91,18 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 	*	@param uuid.
 	*
 	*	@return array, contains everythins about blog
-	*	pass test
+	*	
 	*/
 
 	public function get_blog_by_uuid($uuid){
-		$query = $this->select()->where('blog_uuid = ? ', $uuid);
+
+		$query_data['blog_uuid'] = $uuid;
+		$res ;
+		// $query = $this->select()->where('blog_uuid = ? ', $uuid);
 		try{
-			$res = $this->fetchAll($query);
+			// $res = $this->fetchAll($query);
+
+			$res = $this->get_blogs($query_data);
 		}
 		catch(Exception $e){
 			echo "error on db.<br/>";
@@ -94,20 +119,22 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 	*	@param $blog object.
 	*
 	*	@return array, contains everythins about blog
-	*	pass test;
+	*	;
 	*/
 
 	public function get_blog_by_blog_id($blog){
-		$blog_id = 0;
+		$query_data['blog_id'] = 0;
+
 		if (isset($blog['blog_id'])){
-			$blog_id = $blog['blog_id'];
+			$query_data['blog_id'] = $blog['blog_id'];
+		
 		}
 		else{
-			$blog_id = $blog;
+			$query_data['blog_id'] = $blog;
 		}
-		$query = $this->select()->where('blog_id = ? ', $blog_id);
+		//$query = $this->select()->where('blog_id = ? ', $blog_id);
 		try{
-			$res = $this->fetchAll($query);
+			$res = $this->get_blogs($query_data);//= $this->fetchAll($query);
 		}
 		catch(Exception $e){
 			echo "error on db.<br/>";
@@ -124,25 +151,20 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 	*	@param Max numbers of results, -1 is unlimited.
 	*
 	*	@return array, contains everythins about blog
-	*	pass test;
+	*	;
 	*/
 
 	public function get_blogs_by_user_id($user, $num){
-		$user_id = 0;
+		$query_data['user_id'] = 0;
 		if (isset($user['user_id'])){
-			$user_id = $user['user_id'];
+			$query_data['user_id'] = $user['user_id'];
 		}
 		else{
-			$user_id = $blog;
-		}
-
-		$query = $this->select()->where('user_id = ? ', $user_id);
-		if($num != -1){
-			$query = $query->limit($num);
+			$query_data['user_id'] = $blog;
 		}
 
 		try{
-			$res = $this->fetchAll($query);
+			$res = $this->get_blogs($query_data, $limit);// = $this->fetchAll($query);
 		}
 		catch(Exception $e){
 			echo "error on db.<br/>";
@@ -153,13 +175,10 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 		return $res;
 	}
 
-
-
-
 	//private function
 	/**
 	*	@param: $uuid: uuid used to identify it.
-	*	@param: $new
+	*	@param: $new data
 	*
 	*	@return bool: True on success otherwise failed.
 	*/
@@ -170,9 +189,52 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
  		$row = $this->update($new_data, $where_cluster);
 
  		//return 
- 		
+ 		if ($row) {
+ 			return true;
+ 		}
+ 		else{
+ 			return false;
+ 		}
+ 		return false;
 	}
 	
+	/**
+	*	@param: $uuid: uuid used to identify it.
+	*	@param: $new data.
+	*
+	*	@return bool: True on success otherwise failed.
+	*
+	*/
+
+	public function update_Blog($uuid, $new_data){
+		$this->update_row($uuid, $new_data);
+	}
+
+
+	/**
+	*	Delete an article by it's uuid.	
+	*	@param: article's uuid
+	*
+	*	@return bool: True on success otherwise failed.
+	*/
+	public function delete_by_uuid($uuid){
+
+		$where_cluster = $this->getAdapter()->quoteInto('user_uuid =?', $uuid);
+		$row = $this->delete($where_cluster);
+		if ($row) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private function delete_row($query_data){
+
+		$row = $this->delete($query_data);
+
+		return ;
+	}
+
 	
 
 

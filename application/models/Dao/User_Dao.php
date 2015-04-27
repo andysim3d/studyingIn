@@ -72,7 +72,6 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 * @return bool
 	 */
 	public function update_user($new_data, $where) {
-
 		$where_cluster;
 		if (is_numeric($where)) {
 			$where_cluster = $this->getAdapter()->quoteInto('user_id =?', $where);
@@ -88,7 +87,6 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 			return true;
 		}
 		return false;
-		
 	}
 
 	/**
