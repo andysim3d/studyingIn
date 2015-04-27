@@ -6,17 +6,17 @@
  *
  */
 
-class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
+class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
 
-	protected $_name = "studyingIn_user";
+	protected $_name = "studyingIn_user_album";
 
 	/**
-	 * create a new user into database
+	 * create a new user album
 	 *
 	 * @param array
-	 * @return user_id/false
+	 * @return bool
 	 */
-	public function create_user($userData) {
+	public function create_user_album($user_album) {
 
 		$row = $this->createRow();
 
@@ -27,7 +27,7 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 			}
 
 			$row->save();
-			return $row->user_id;
+			return true;
 
 		} else {
 			return false;
@@ -35,12 +35,12 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	}
 
 	/**
-	 * get user from database
+	 * get user album
 	 *
-	 * @param int/array
-	 * @return array/null
+	 * @param album_id/array
+	 * @return $album/null
 	 */
-	public function get_user($where) {
+	public function get_user_album($where) {
 
 		if (is_numeric($where)) {
 			$row = $this->find($where)->current();
@@ -61,68 +61,31 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 		} else {
 			return null;
 		}
-
 	}
 
 	/**
-	 * update user information
+	 * update user's album information
 	 *
 	 * @param 1: array new data
-	 * @param 2: array where(id/uuid)
+	 * @param 2: array where(album_id/album_uuid)
 	 * @return bool
 	 */
-	public function update_user($new_data, $where) {
+	public function update_user_album($new_data, $where) {
 
 		$where_cluster;
 		if (is_numeric($where)) {
-			$where_cluster = $this->getAdapter()->quoteInto('user_id =?', $where);
+			$where_cluster = $this->getAdapter()->quoteInto('album_id =?', $where);
 			//print("11");
 		}
 		if (is_string($where)) {
-			$where_cluster = $this->getAdapter()->quoteInto('user_uuid =?', $where);
+			$where_cluster = $this->getAdapter()->quoteInto('album_uuid =?', $where);
 		}
 
 		$row = $this->update($new_data, $where_cluster);
-
-		if ($row) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	/**
-	 * active user by user_id
-	 *
-	 * @param int user_id
-	 * @return bool
-	 */
-	public function active_user($user_id) {
-
-		$new_data = array(
-			'user_actived' => 1,
-		);
-
-		return $this->update_user($new_data, $user_id);
-	}
-
-	/**
-	 * deactive user by user_id
-	 *
-	 * @param int user_id
-	 * @return bool
-	 */
-	public function deactive_user($user_id) {
-
-		$new_data = array(
-			'user_actived' => 0,
-		);
-
-		return $this->update_user($new_data, $user_id);
-	}
-
-	/**
-	 * delete user
+	 * delete user's album
 	 *
 	 * @param int/string/array
 	 * @return bool
@@ -131,10 +94,10 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 
 		$where_cluster;
 		if (is_numeric($where)) {
-			$where_cluster = $this->getAdapter()->quoteInto('user_id =?', $where);
+			$where_cluster = $this->getAdapter()->quoteInto('album_id =?', $where);
 		}
 		if (is_string($where)) {
-			$where_cluster = $this->getAdapter()->quoteInto('user_uuid =?', $where);
+			$where_cluster = $this->getAdapter()->quoteInto('album_uuid =?', $where);
 		}
 
 		if (is_array($where)) {
@@ -155,4 +118,3 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	}
 
 }
-?>

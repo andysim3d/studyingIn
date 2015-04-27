@@ -70,7 +70,7 @@ class studyingIn_Model_User_Info_Dao extends Zend_Db_Table_Abstract {
 	 * @param 2: array where(id/uuid)
 	 * @return bool
 	 */
-	public function update_user_info($newdata, $where) {
+	public function update_user_info($new_data, $where) {
 
 		$where_cluster;
 		if (is_numeric($where)) {
@@ -81,7 +81,7 @@ class studyingIn_Model_User_Info_Dao extends Zend_Db_Table_Abstract {
 			$where_cluster = $this->getAdapter()->quoteInto('user_uuid =?', $where);
 		}
 
-		$row = $this->update($newdata, $where_cluster);
+		$row = $this->update($new_data, $where_cluster);
 	}
 
 	/**
