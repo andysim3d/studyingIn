@@ -25,7 +25,14 @@ class StudyingIn_Model_User_Photo_Dao extends Zend_Db_Table_Abstract {
 			$row['photo_upload_date'] = date("Y-m-d H:i:s",time());
 
 			// print_r($row);
-			$res =  $row->save();
+			try{
+				$res =  $row->save();
+			}
+			catch(Exception $e){
+				throw new Exception("Error in DB insert Request", 1);
+				
+				return false;
+			}
 			return $res;
 		}
 
@@ -39,7 +46,12 @@ class StudyingIn_Model_User_Photo_Dao extends Zend_Db_Table_Abstract {
 
 			$where_cluster = $this->getAdapter()->quoteInto('photo_id =?', $photo_id);
 
-			$row = $this->update($update_data, $where_cluster);
+			try{
+				$row = $this->update($update_data, $where_cluster);
+			}
+			catch(Exception $e){
+				return false;
+			}
 			//return
 			if ($row) {
 				return true;
@@ -64,7 +76,12 @@ class StudyingIn_Model_User_Photo_Dao extends Zend_Db_Table_Abstract {
 			if ($limit != -1) {
 				$query = $query->limit($limit);
 			}
-			$res = $this->fetchAll($query);
+			try {
+				
+				$res = $this->fetchAll($query);
+			} catch (Exception $e) {
+				return false;
+			}
 
 			return $res;
 		}
@@ -78,7 +95,12 @@ class StudyingIn_Model_User_Photo_Dao extends Zend_Db_Table_Abstract {
 		*
 		*/
 		private function delete_row($query_data){
-			$row = $this->delete($query_data);
+			try{
+				$row = $this->delete($query_data);
+			}
+			catch(Exception $e){
+				return false;
+			}
 			if($row){
 				return true;
 			}
@@ -108,8 +130,8 @@ class StudyingIn_Model_User_Photo_Dao extends Zend_Db_Table_Abstract {
 				$new_data[$key] = $value;
 			}
 			$new_data['album_id'] = $album['album_id'];
-			print_r($new_data);
-			$this->create_row($new_data);
+			//print_r($new_data);
+			return $this->create_row($new_data);
 			// return $this->create_row($new_data);
 		}
 

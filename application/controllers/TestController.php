@@ -1,7 +1,7 @@
 <?php
 
 
-	require_once APPLICATION_PATH.'/models/Dao/Up_Dao.php';
+	 require_once APPLICATION_PATH.'/models/Dao/User_Photo_Dao.php';
 
 
 
@@ -35,7 +35,7 @@
 	}
 
 
-class TestController extends Zend_Controller_Action {
+class TestController extends BaseController {
 
 	public function init() {
 		/* Initialize action controller here */
@@ -61,14 +61,11 @@ class TestController extends Zend_Controller_Action {
 	}
 	public function upAction() {
 		// action body
-		$up_dao = new studyingIn_Model_Up_Dao();
-		$user['user_id'] = 1;
-		$uuid = 1000;
+		$up_dao = new StudyingIn_Model_User_Photo_Dao();
+		$user['album_id'] = 2;
+		$uuid['photo_name'] = "blog-be3549a0-62a7-4b22-ac1d-a311f9847342";
 		echo "<pre>";
-		$res = ( ($up_dao->get_all_vote_user_by_uuid($uuid)) );
-		 foreach ($res as $key) {
-		 	echo $key['user_id']."\n";
-		 }
+		($up_dao->upload_photo($user)) ;
 		echo "</pre>";
 		// $up_dao->test();
 		// phpinfo();
