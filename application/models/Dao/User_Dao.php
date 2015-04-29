@@ -41,7 +41,6 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 * @return array/null
 	 */
 	public function get_user($where) {
-
 		if (is_numeric($where)) {
 			$row = $this->find($where)->current();
 		}
@@ -72,6 +71,7 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 * @return bool
 	 */
 	public function update_user($new_data, $where) {
+
 		$where_cluster;
 		if (is_numeric($where)) {
 			$where_cluster = $this->getAdapter()->quoteInto('user_id =?', $where);
@@ -79,6 +79,14 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 		}
 		if (is_string($where)) {
 			$where_cluster = $this->getAdapter()->quoteInto('user_uuid =?', $where);
+		}
+
+		if (is_array($where)) {
+			if (count($where) > 0) {
+				foreach ($where as $key => $value) {
+					$where_cluster[$key . '=?'] = $value;
+				}
+			}
 		}
 
 		$row = $this->update($new_data, $where_cluster);
@@ -96,12 +104,14 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 * @return bool
 	 */
 	public function active_user($user_id) {
-
+		//var_dump($user_id);
 		$new_data = array(
 			'user_actived' => 1,
 		);
+		print_r($new_data);
+		echo $user_id;
 
-		return $this->update_user($new_data, $user_id);
+		return $this->update_user($new_data, (int) $user_id);
 	}
 
 	/**
@@ -148,6 +158,24 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	/**
+	 * check user exist
+	 *
+	 * @param array
+	 * @return true: exit;
+	 *		   false: not exit;
+	 */
+	public function is_user_exist($where) {
+
+		$row = $this->get_user($where);
+
+		if (count($row) == 0) {
+			return false;
+		} else {
+			return true;
 		}
 
 	}
