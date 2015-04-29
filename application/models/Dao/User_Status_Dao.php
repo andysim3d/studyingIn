@@ -26,7 +26,13 @@ class StudyingIn_Model_Status_Dao extends Zend_Db_Table_Abstract {
 				$row->$key = $value;
 			}
 
-			$row->save();
+			try{
+				$row->save();
+			}
+			catch (Exception $e){
+				return false;
+			}
+
 			return $row->user_id;
 
 		} else {
