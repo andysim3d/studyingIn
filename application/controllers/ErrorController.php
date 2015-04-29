@@ -1,7 +1,14 @@
 <?php
 
+require_once APPLICATION_PATH.'/utils/Email_Sender.php';
+
 class ErrorController extends Zend_Controller_Action
 {
+    public function init(){
+        print 1;
+        $errors = $this->_getParam('error_handler');
+
+    }
 
     public function errorAction()
     {
@@ -17,7 +24,7 @@ class ErrorController extends Zend_Controller_Action
             case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_CONTROLLER:
             case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ACTION:
                 // 404 error -- controller or action not found
-                $this->getResponse()->setHttpResponseCode(404);
+                 $this->getResponse()->setHttpResponseCode(404);
                 $priority = Zend_Log::NOTICE;
                 $this->view->message = 'Page not found';
                 break;
