@@ -10,6 +10,9 @@ defined('APPLICATION_ENV')
 defined('PUBLIC_PATH')
 || define('PUBLIC_PATH', $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
 
+defined('UPLOAD_PATH')
+|| define('UPLOAD_PATH', realpath(dirname(__FILE__) . '/../uploads'));
+
 // Ensure library/ is on include_path
 set_include_path(implode(PATH_SEPARATOR, array(
 	realpath(APPLICATION_PATH . '/../library'),
@@ -24,5 +27,11 @@ $application = new Zend_Application(
 	APPLICATION_ENV,
 	APPLICATION_PATH . '/configs/application.ini'
 );
+try{
 $application->bootstrap()
             ->run();
+}
+catch(Exception $e){
+	echo $e->getMessage();
+	exit();
+}
