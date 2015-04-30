@@ -6,120 +6,211 @@
  *
  */
 
+require_once APPLICATION_PATH . '/utils/UUID.php';
+
 class StudyingIn_Model_Status_Dao extends Zend_Db_Table_Abstract {
 
 	protected $_name = "studyingIn_user_status";
 
-	/**
-	 * create a new user status
-	 *
-	 * @param array
-	 * @return user_id/false
-	 */
-	public function create_user_status($user_status) {
+	//C
+	private function create_status($user_status) {
 
 		$row = $this->createRow();
 
-		if (count($user_status) > 0) {
-
-			foreach ($user_status as $key => $value) {
-				$row->$key = $value;
-			}
-
-			try{
-				$row->save();
-			}
-			catch (Exception $e){
-				return false;
-			}
-
-			return $row->user_id;
-
-		} else {
+		foreach ($user_status as $key => $value) {
+			$row[$key] = $value;
+		}
+		$row['status_uuid'] = 'status-' . UUID::v4();
+		$row['status_post_date'] = date("Y-m-d H:i:s", time());
+		try {
+			$row->save();
+		} catch (Exception $e) {
 			return false;
 		}
+		return true;
+
 	}
 
-	/**
-	 * get user's status
-	 *
-	 * @param array
-	 * @return $row/null
-	 */
-	public function get_user_status($where) {
+	//U
+	private function update_status($new_data, $where) {
 
-		if (is_array($where)) {
-			$select = $this->select();
-			if (count($where) > 0) {
-				foreach ($where as $key => $value) {
-					$select->where($key . '=?', $value);
-				}
-			}
-			$row = $this->fetchAll($select);
+		try {
+			$row = $this->update($new_data, $where);
+		} catch (Exception $e) {
+			return false;
 		}
-
-		if ($row) {
-			return $row;
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * update user status
-	 *
-	 * @param 1: array new data
-	 * @param 2: array where
-	 * @return bool
-	 */
-	public function update_user_status($new_data, $where) {
-
-		if (is_array($where)) {
-			if (count($where) > 0) {
-				foreach ($where as $key => $value) {
-					$where_cluster[$key . '=?'] = $value;
-				}
-			}
-		}
-
-		$row = $this->update($new_data, $where_cluster);
-
 		if ($row) {
 			return true;
 		}
 		return false;
 	}
 
+	//R
+	private function get_status($where, $limit = -1) {
+
+		$query = $this->select();
+		foreach ($where as $key => $value) {
+			$query->where($key . ' = ? ', $value);
+		}
+
+		if ($limit != -1) {
+			$query->limit($limit);
+		}
+		try {
+			$res = $this->fetchAll($query);
+		} catch (Exception $e) {
+			return false;
+		}
+
+		return $res;
+
+	}
+
+	//D
+	private function delete_status($where) {
+
+		try {
+			$row = $this->delete($where);
+		} catch (Exception $e) {
+			return false;
+		}
+
+		return true;
+	}
+
 	/**
-	 * delete user's
+	 * create a new user status
 	 *
-	 * @param status_id/status_uuid/array
+	 * @param array
 	 * @return bool
 	 */
-	public function delete_user_status($where) {
+	public function create_new_status($user_status) {
 
-		$where_cluster;
-		if (is_numeric($where)) {
-			$where_cluster = $this->getAdapter()->quoteInto('status_id =?', $where);
-		}
-		if (is_string($where)) {
-			$where_cluster = $this->getAdapter()->quoteInto('status_uuid =?', $where);
-		}
+		if (count($user_status) > 0) {
 
-		if (is_array($where)) {
-			if (count($where) > 0) {
-				foreach ($where as $key => $value) {
-					$where_cluster[$key . '=?'] = $value;
-				}
-			}
-		}
+			return $this->create_status($user_status);
 
-		$row = $this->delete($where_cluster);
-		if ($row) {
-			return true;
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * get status by status_id
+	 *
+	 * @param int: status_id
+	 * @return $row/null
+	 */
+	public function get_status_by_status_id($status_id) {
+
+		$where = array('status_id' => $status_id);
+		return $this->get_status($where);
+	}
+
+	/**
+	 * get status by status_uuid
+	 *
+	 * @param string: status_uuid
+	 * @return $row/null
+	 */
+	public function get_status_by_status_uuid($status_uuid) {
+
+		$where = array('status_uuid' => $status_uuid);
+		return $this->get_status($where);
+	}
+
+	/**
+	 * get user's statuses by user_id
+	 *
+	 * @param int: user_id
+	 * @return $rows/null
+	 */
+	public function get_statuses_by_user_id($user_id, $limit = 10) {
+
+		$where = array('user_id' => $user_id);
+
+		return $this->get_status($where, $limit);
+	}
+
+	/**
+	 * update user status_privilege by status_id
+	 *
+	 * @param int 1: new status_privilege
+	 * @param int 2: status_id
+	 * @return bool
+	 */
+	public function update_status_privilege_by_status_id($status_privilege, $status_id) {
+
+		$new_data = array('status_privilege' => $status_privilege);
+		$where = $this->getAdapter()->quoteInto('status_id =?', $status_id);
+		return $this->update_status($new_data, $where);
+	}
+
+	/**
+	 * update user status_privilege by status_uuid
+	 *
+	 * @param int 1: new status_privilege
+	 * @param string 2: status_uuid
+	 * @return bool
+	 */
+	public function update_status_privilege_by_status_uuid($status_privilege, $status_uuid) {
+
+		$new_data = array('status_privilege' => $status_privilege);
+		$where = $this->getAdapter()->quoteInto('status_uuid =?', $status_uuid);
+		return $this->update_status($new_data, $where);
+	}
+
+	/**
+	 * update user status_content by status_id
+	 *
+	 * @param string 1: new status_content
+	 * @param int 2: status_id
+	 * @return bool
+	 */
+	public function update_status_content_by_status_id($status_content, $status_id) {
+
+		$new_data = array('status_content' => $status_content);
+		$where = $this->getAdapter()->quoteInto('status_id =?', $status_id);
+		return $this->update_status($new_data, $where);
+	}
+
+	/**
+	 * update user status_content by status_uuid
+	 *
+	 * @param string 1: new status_content
+	 * @param string 2: status_uuid
+	 * @return bool
+	 */
+	public function update_status_content_by_status_uuid($status_content, $status_uuid) {
+
+		$new_data = array('status_content' => $status_content);
+		$where = $this->getAdapter()->quoteInto('status_uuid =?', $status_uuid);
+		return $this->update_status($new_data, $where);
+	}
+
+	/**
+	 * delete status by status_id
+	 *
+	 * @param int: status_id
+	 * @return bool
+	 */
+	public function delete_status_by_status_id($status_id) {
+
+		$where = $this->getAdapter()->quoteInto('status_id =?', $status_id);
+		return $this->delete_status($where);
+
+	}
+
+	/**
+	 * delete status by status_uuid
+	 *
+	 * @param string: status_uuid
+	 * @return bool
+	 */
+	public function delete_status_by_status_uuid($status_uuid) {
+
+		$where = $this->getAdapter()->quoteInto('status_uuid =?', $status_uuid);
+		return $this->delete_status($where);
 
 	}
 

@@ -25,8 +25,9 @@ class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
 		try {
 			$row->save();
 		} catch (Exception $e) {
-			return true;
+			return false;
 		}
+		return true;
 
 	}
 
@@ -38,8 +39,10 @@ class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
 		} catch (Exception $e) {
 			return false;
 		}
-
-		return true;
+		if ($row) {
+			return true;
+		}
+		return false;
 
 	}
 
@@ -132,7 +135,7 @@ class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
 	public function update_album_name_by_album_id($new_name, $album_id) {
 
 		$new_data = array('album_name' => $new_name);
-		$where = $this->getAdapter()->quoteInto('user_id =?', $user_id);
+		$where = $this->getAdapter()->quoteInto('album_id =?', $album_id);
 		return $this->update_album($new_data, $where);
 	}
 
@@ -160,7 +163,7 @@ class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
 	public function update_album_privilege_by_album_id($album_privilege, $album_id) {
 
 		$new_data = array('album_privilege' => $album_privilege);
-		$where = $this->getAdapter()->quoteInto('user_id =?', $user_id);
+		$where = $this->getAdapter()->quoteInto('album_id =?', $album_id);
 		return $this->update_album($new_data, $where);
 	}
 
@@ -188,7 +191,7 @@ class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
 	public function update_album_info_by_album_id($album_info, $album_id) {
 
 		$new_data = array('album_info' => $album_info);
-		$where = $this->getAdapter()->quoteInto('user_id =?', $user_id);
+		$where = $this->getAdapter()->quoteInto('album_id =?', $album_id);
 		return $this->update_album($new_data, $where);
 	}
 
@@ -215,7 +218,7 @@ class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
 	public function delete_album_by_album_id($album_id) {
 
 		$where = $this->getAdapter()->quoteInto('album_id =?', $album_id);
-		return $this->delete_user_info($where);
+		return $this->delete_album($where);
 
 	}
 
@@ -228,7 +231,7 @@ class StudyingIn_Model_User_Album_Dao extends Zend_Db_Table_Abstract {
 	public function delete_album_by_album_uuid($album_uuid) {
 
 		$where = $this->getAdapter()->quoteInto('album_uuid =?', $album_uuid);
-		return $this->delete_user_info($where);
+		return $this->delete_album($where);
 
 	}
 

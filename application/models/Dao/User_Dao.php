@@ -42,7 +42,10 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 			return false;
 		}
 
-		return true;
+		if ($row) {
+			return true;
+		}
+		return false;
 
 	}
 
