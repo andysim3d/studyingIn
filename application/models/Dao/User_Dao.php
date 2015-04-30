@@ -135,6 +135,23 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	}
 
 	/**
+	 * authenticate the user by user_password and user_id
+	 *
+	 * @param string: $user_password before salt
+	 * @param string: $salt
+	 * @param string: $user_password after salt
+	 * @return bool
+	 */
+	public function authenticate_user_by_password($user_password, $salt, $user_salted_password) {
+
+		$salted_password = hash('sha256', $user_password . $salt);
+		if ($salted_password == $user_salted_password) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * update password by email
 	 *
 	 * @param 1:password
@@ -259,6 +276,24 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	public function check_user_existence_by_user_uuid($user_uuid) {
 
 		$where = $this->getAdapter()->quoteInto('user_uuid =?', $user_uuid);
+		$row = $this->get_user($where);
+
+		if (count($row) == 0) {
+			return false;
+		}
+		return true;
+
+	}
+
+	/**
+	 * check user by name
+	 *
+	 * @param string:user_name
+	 * @return bool: true for exist; flase for not.
+	 */
+	public function check_user_existence_by_user_name($user_name) {
+
+		$where = $this->getAdapter()->quoteInto('user_name =?', $user_name);
 		$row = $this->get_user($where);
 
 		if (count($row) == 0) {
