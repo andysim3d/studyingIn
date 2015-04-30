@@ -16,19 +16,20 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	private function create_user($user) {
 
 		$row = $this->createRow();
-
 		foreach ($user as $key => $value) {
-			$row->$key = $value;
+			$row[$key] = $value;
 		}
-		$row['salt'] = Tools::generateSalt16();
-		$row['user_password'] = hash('sha256', $user['user_password'] . $row['salt']);
 		$row['user_uuid'] = 'user-' . UUID::v4();
+		$row['salt'] = Tools::generate_salt_16();
+		$row['user_password'] = hash('sha256', $user['user_password'] . $row['salt']);
+
 		try {
 			$row->save();
 		} catch (Exception $e) {
 			return false;
 		}
-		return $row->user_id;
+
+		return $row;
 
 	}
 
@@ -60,6 +61,7 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 
 	//D
 	private function delete_user($where) {
+
 		try {
 			$row = $this->delete($where);
 		} catch (Exception $e) {
@@ -73,10 +75,16 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 * create a new user into database
 	 *
 	 * @param array
-	 * @return user_id/false
+	 * @return array/false
 	 */
 	public function create_new_user($user) {
 
+		if (isset($user['confirm_password'])) {
+			unset($user['confirm_password']);
+		}
+		if (isset($user['captcha'])) {
+			unset($user['captcha']);
+		}
 		if (count($user) > 0) {
 			return $this->create_user($user);
 		} else {
@@ -92,7 +100,8 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 */
 	public function get_user_by_user_id($user_id) {
 
-		$user = $this->get_user(array('user_id = ?' => $user_id));
+		$where = $this->getAdapter()->quoteInto('user_id =?', $user_id);
+		$user = $this->get_user($where);
 		return $user;
 	}
 
@@ -104,7 +113,8 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 */
 	public function get_user_by_user_uuid($user_uuid) {
 
-		$user = $this->get_user(array('user_uuid =?' => $user_uuid));
+		$where = $this->getAdapter()->quoteInto('user_uuid =?', $user_uuid);
+		$user = $this->get_user($where);
 		return $user;
 	}
 
@@ -116,7 +126,8 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 */
 	public function get_user_by_user_email($user_email) {
 
-		$user = $this->get_user(array('user_email =?' => $user_email));
+		$where = $this->getAdapter()->quoteInto('user_email =?', $user_email);
+		$user = $this->get_user($where);
 		return $user;
 	}
 
@@ -129,8 +140,9 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 * @return bool
 	 */
 	public function update_password_by_user_email($password, $salt, $user_email) {
+
 		$new_password = hash('sha256', $password . $salt);
-		$where = array('user_email =?' => $user_email);
+		$where = $this->getAdapter()->quoteInto('user_email =?', $user_email);
 		return $this->update_user(array('user_password' => $new_password), $where);
 	}
 
@@ -143,8 +155,9 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 * @return bool
 	 */
 	public function update_password_by_user_uuid($password, $salt, $user_uuid) {
+
 		$new_password = hash('sha256', $password . $salt);
-		$where = array('user_uuid =?' => $user_uuid);
+		$where = $this->getAdapter()->quoteInto('user_uuid =?', $user_uuid);
 		return $this->update_user(array('user_password' => $new_password), $where);
 	}
 
@@ -154,12 +167,12 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 * @param int user_id
 	 * @return bool
 	 */
-	public function active_user($user_id) {
+	public function active_user_by_user_id($user_id) {
 		//var_dump($user_id);
 		$new_data = array(
 			'user_actived' => 1,
 		);
-		$where = array('user_id =?' => $user_id);
+		$where = $this->getAdapter()->quoteInto('user_id =?', $user_id);
 
 		return $this->update_user($new_data, $where);
 	}
@@ -170,12 +183,12 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 * @param int user_id
 	 * @return bool
 	 */
-	public function deactive_user($user_id) {
+	public function deactive_user_by_user_id($user_id) {
 
 		$new_data = array(
 			'user_actived' => 0,
 		);
-		$where = array('user_id =?' => $user_id);
+		$where = $this->getAdapter()->quoteInto('user_id =?', $user_id);
 
 		return $this->update_user($new_data, $where);
 	}
@@ -188,7 +201,7 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 */
 	public function delete_user_by_user_id($user_id) {
 
-		$where = array('user_id =?' => $user_id);
+		$where = $this->getAdapter()->quoteInto('user_id =?', $user_id);
 		return $this->delete_user($where);
 	}
 
@@ -200,7 +213,7 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 */
 	public function delete_user_by_user_email($user_email) {
 
-		$where = array('user_email =?' => $user_email);
+		$where = $this->getAdapter()->quoteInto('user_email =?', $user_email);
 		return $this->delete_user($where);
 	}
 
@@ -212,7 +225,7 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 */
 	public function delete_user_by_user_uuid($user_uuid) {
 
-		$where = array('user_uuid =?' => $user_uuid);
+		$where = $this->getAdapter()->quoteInto('user_uuid =?', $user_uuid);
 		return $this->delete_user($where);
 	}
 
@@ -224,7 +237,7 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 */
 	public function check_user_existence_by_user_email($user_email) {
 
-		$where = array('user_email =?' => $user_email);
+		$where = $this->getAdapter()->quoteInto('user_email =?', $user_email);
 		$row = $this->get_user($where);
 
 		if (count($row) == 0) {
@@ -242,7 +255,7 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 */
 	public function check_user_existence_by_user_uuid($user_uuid) {
 
-		$where = array('user_uuid =?' => $user_uuid);
+		$where = $this->getAdapter()->quoteInto('user_uuid =?', $user_uuid);
 		$row = $this->get_user($where);
 
 		if (count($row) == 0) {
@@ -260,7 +273,7 @@ class StudyingIn_Model_User_Dao extends Zend_Db_Table_Abstract {
 	 */
 	public function check_user_existence_by_user_id($user_id) {
 
-		$where = array('user_id =?' => $user_id);
+		$where = $this->getAdapter()->quoteInto('user_id =?', $user_id);
 		$row = $this->get_user($where);
 
 		if (count($row) == 0) {
