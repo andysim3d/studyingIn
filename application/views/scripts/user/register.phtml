@@ -1,0 +1,24 @@
+<?php
+// echo $this->formRegister;
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<form action="/user/register" method="post">
+	<input type="text" name="user_name">
+	<input type="text" name="user_email">
+	<input type="password" name="user_password">
+	<input type="password" name="confirm_password">
+	<select name="user_school">
+		<option value="  ">----</option>
+		<option value="Stevens Institute of Technology">Stevens Institute of Technology</option>
+		<option value="other">other</option>
+	</select>
+	<input type="submit" name="submit">
+</form>
+</body>
+</html>
