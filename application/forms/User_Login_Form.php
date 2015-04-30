@@ -10,7 +10,7 @@ class StudyingIn_User_Login_Form extends Zend_Form {
 
 	public function init() {
 
-		$this->setMethod('post');
+		//$this->setMethod('post');
 
 		//user_email
 		$user_email = $this->createElement('text', 'user_email');
@@ -27,11 +27,11 @@ class StudyingIn_User_Login_Form extends Zend_Form {
 		              ->addValidator('stringLength', false, array(6));
 
 		//user_remember
-		$user_remember = $this->createElement('checkbox', 'user_remember');
+		//$user_remember = $this->createElement('checkbox', 'user_remember');
 
-		//captcha
-		$captcha = $this->createElement('text', 'captcha');
-		$captcha->setRequired(true);
+		// //captcha
+		// $captcha = $this->createElement('text', 'captcha');
+		// $captcha->setRequired(true);
 
 		//submit
 		$submit = $this->createElement('submit', 'submit');
@@ -41,7 +41,7 @@ class StudyingIn_User_Login_Form extends Zend_Form {
 			$user_email,
 			$user_password,
 			$user_remember,
-			$captcha,
+			//$captcha,
 			$submit,
 		));
 

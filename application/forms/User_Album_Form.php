@@ -19,15 +19,11 @@ class StudyingIn_User_Album_Form extends Zend_Form {
 
 		//album_privilege
 		$album_privilege = $this->createElement('select', 'album_privilege');
-		$album_privilege->setRequired(true)
-		                ->addMultiOptions(array(
-			                1 => "仅本人可见",
-			                2 => "粉丝可见",
-			                3 => "互粉可见"));
+		$album_privilege->setRequired(true);
 
 		//album_info
 		$album_info = $this->createElement('textarea', 'album_info');
-		$album_info->setRequired(true);
+		$album_info->setRequired(false);
 
 		//captcha
 		$captcha = $this->createElement('text', 'captcha');

@@ -13,10 +13,7 @@ class StudyingIn_User_Info_Form extends Zend_Form {
 
 		//user_gender
 		$user_gender = $this->createElement('radio', 'user_gender');
-		$user_gender->setRequired(false)
-		            ->addMultiOptions(array(
-			            '1' => "男",
-			            '0' => "女"));
+		$user_gender->setRequired(false);
 
 		//user_avatar
 		$user_avatar = $this->createElement('file', 'user_avatar');

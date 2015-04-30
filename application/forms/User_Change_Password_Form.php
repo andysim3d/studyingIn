@@ -6,25 +6,17 @@
  *
  */
 
-class StudyingIn_User_Register_Form extends Zend_Form {
+class StudyingIn_User_Change_Password_Form extends Zend_Form {
 
 	public function init() {
 
 		//$this->setMethod('post');
 
-		//user_name
-		$user_name = $this->createElement('text', 'user_name');
-		$user_name->setRequired(true)
-		          ->addFilter('StringTrim')
-		          ->addFilter('StripTags');
-
-		//user_email
-		$user_email = $this->createElement('text', 'user_email');
-		$user_email->addFilter('StringTrim')
-		           ->setRequired(true)
-		           ->addFilter('StripTags')
-		           ->addFilter('StringtoLower')
-		           ->addValidator('EmailAddress');
+		//old_password
+		$old_password = $this->createElement('password', 'old_password');
+		$old_password->addFilter('StringTrim')
+		             ->setRequired(true)
+		             ->addValidator('stringLength', false, array(6));
 
 		//user_password
 		$user_password = $this->createElement('password', 'user_password');
@@ -37,9 +29,8 @@ class StudyingIn_User_Register_Form extends Zend_Form {
 		$confirm_password->setRequired(true)
 		                 ->addValidator('identical', false, array('token' => 'user_password'));
 
-		//user_school
-		$user_school = $this->createElement('text', 'user_school');
-		$user_school->setRequired(true);
+		//user_remember
+		//$user_remember = $this->createElement('checkbox', 'user_remember');
 
 		// //captcha
 		// $captcha = $this->createElement('text', 'captcha');
@@ -50,11 +41,9 @@ class StudyingIn_User_Register_Form extends Zend_Form {
 
 		// add all these elements to the form
 		$this->addElements(array(
-			$user_name,
-			$user_email,
+			$old_password,
 			$user_password,
 			$confirm_password,
-			$user_school,
 			//$captcha,
 			$submit,
 		));

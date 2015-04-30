@@ -21,8 +21,8 @@ class StudyingIn_User_Find_Password_Form extends Zend_Form {
 		           ->addValidator('EmailAddress');
 
 		//captcha
-		$captcha = $this->createElement('text', 'captcha');
-		$captcha->setRequired(true);
+		// $captcha = $this->createElement('text', 'captcha');
+		// $captcha->setRequired(true);
 
 		//submit
 		$submit = $this->createElement('submit', 'submit');
@@ -30,7 +30,7 @@ class StudyingIn_User_Find_Password_Form extends Zend_Form {
 		// add all these elements to the form
 		$this->addElements(array(
 			$user_email,
-			$captcha,
+			//$captcha,
 			$submit,
 		));
 
