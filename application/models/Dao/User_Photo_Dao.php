@@ -156,7 +156,7 @@ class StudyingIn_Model_User_Photo_Dao extends Zend_Db_Table_Abstract {
 
 		/**
 		*	Get photos by album
-		*	@param User object
+		*	@param album object
 		*	
 		*	@return photo row.
 		*/
@@ -182,19 +182,13 @@ class StudyingIn_Model_User_Photo_Dao extends Zend_Db_Table_Abstract {
 
 		/**
 		*	delete photo
-		*	@param photo info, must have id.
+		*	@param photo id.
 		*
 		*	@return bool, true on success otherwise failed.	
 		*
 		*/
-		public function delete_photo_by_id($photo){
-			if(!isset($photo['photo_id']))
-			{
-				return false;
-			}
-
-			$photo_id = $photo['photo_id'];
-			return $this->delete_row(array('photo_id' => $photos['photo_id']));
+		public function delete_photo_by_id($photo_id){
+			return $this->delete_row(array('photo_id' => $photos_id));
 		}
 
 
