@@ -20,6 +20,19 @@
 			exit(0);
 		}
 
+
+		/**
+		*	generate universal error message using json
+		*	@param: error message
+		*	@return void
+		*/
+		private function generate_error($info){
+			$res['Error'] = $info;
+			$strr = json_encode($res);
+			echo $strr;
+			return ;
+		}
+
 		public function getuinfoAction(){
 			$user_id = $this->getRequest()->getParam('user_id',-1);
 
@@ -68,20 +81,39 @@
 
 		}
 
-		/**
-		*	generate universal error message using json
-		*	@param: error message
-		*	@return void
-		*/
-		private function generate_error($info){
-			$res['Error'] = $info;
-			$strr = json_encode($res);
-			echo $strr;
-			return ;
+
+
+	
+		public function getalbumAction(){
+			$album['album_id'] = $this->getRequest()->getParam('album_id', -1);
+
+			$album_dao = new StudyingIn_Model_User_Album_Dao();
+
+			$res = $album_dao->get_user_album($album);
+			//print_r($res);
+			if ($res == false || count($res) == 0) {
+				$this->generate_error("get album info failed");
+			}
+			else{
+				$resu = array();
+				foreach ($res[0] as $key => $value) {
+					$resu[$key] = $value;
+				}
+				// print_r($resu);
+				$strr = json_encode($resu);
+				echo $strr;
+			}
+
+			exit(0);
+
 		}
 
 
+
+
+
 	}
+
 
 
 

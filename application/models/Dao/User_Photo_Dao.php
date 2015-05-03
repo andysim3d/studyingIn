@@ -67,7 +67,7 @@ class StudyingIn_Model_User_Photo_Dao extends Zend_Db_Table_Abstract {
 		*	@param  
 		*
 		*/
-		private function get_row($query_data, $limit=-1){
+		private function get_rows($query_data, $limit=-1){
 
 			$query = $this->select();
 			foreach ($$data as $key => $value) {
@@ -83,7 +83,7 @@ class StudyingIn_Model_User_Photo_Dao extends Zend_Db_Table_Abstract {
 				return false;
 			}
 
-			return $res;
+			return $res->toArray();
 		}
 
 
@@ -165,7 +165,7 @@ class StudyingIn_Model_User_Photo_Dao extends Zend_Db_Table_Abstract {
 				return 0;
 			}
 
-			$rows = $this->get_row(array('album_id' => $album['album_id']), 30);
+			$rows = $this->get_rows(array('album_id' => $album['album_id']), 30);
 
 		}
 
@@ -176,7 +176,7 @@ class StudyingIn_Model_User_Photo_Dao extends Zend_Db_Table_Abstract {
 		*	@return photo rows.
 		*/
 		public function get_photo_by_id($photo_id){
-			$rows = $this->get_row(array('photo_id' => $photo_id), 30);
+			$rows = $this->get_rows(array('photo_id' => $photo_id), 30);
 			return $rows;
 		}
 

@@ -22,7 +22,7 @@
 require_once APPLICATION_PATH . '/utils/isvalidate.php';
 require_once APPLICATION_PATH . '/utils/UUID.php';
 
-class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
+class StudyingIn_Model_User_Blog_Dao extends Zend_Db_Table_Abstract {
 
 	protected $_name = "studyingIn_user_blog";
 
@@ -72,15 +72,15 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 
 	private function get_blogs($data, $limit = -1) {
 		$query = $this->select();
-		foreach ($$data as $key => $value) {
-			$query = $query->where('$key = ? ', $value);
+		foreach ($data as $key => $value) {
+			$query = $query->where( $key .'= ? ', $value);
 		}
 		if ($limit != -1) {
 			$query = $query->limit($limit);
 		}
 		$res = $this->fetchAll($query);
 
-		return $res;
+		return $res->toArray();
 	}
 
 	/**
@@ -147,8 +147,9 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 	 *	;
 	 */
 
-	public function get_blogs_by_user_id($user, $num) {
+	public function get_blogs_by_user_id($user, $num = 30) {
 		$query_data['user_id'] = 0;
+		$res = [];
 		if (isset($user['user_id'])) {
 			$query_data['user_id'] = $user['user_id'];
 		} else {
@@ -156,7 +157,7 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 		}
 
 		try {
-			$res = $this->get_blogs($query_data, $limit); // = $this->fetchAll($query);
+			$res = $this->get_blogs($query_data, $num); // = $this->fetchAll($query);
 		} catch (Exception $e) {
 			echo "error on db.<br/>";
 		}
@@ -165,6 +166,29 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 		}
 		return $res;
 	}
+
+	//private function
+	/**
+	 *	@param: $uuid: uuid used to identify it.
+	 *	@param: $new data
+	 *
+	 *	@return bool: True on success otherwise failed.
+	 */
+	private function update_row_by_id($blog_id, $new_data) {
+
+		$where_cluster = $this->getAdapter()->quoteInto('blog_id =?', $blog_id);
+
+		$row = $this->update($new_data, $where_cluster);
+
+		//return
+		if ($row) {
+			return true;
+		} else {
+			return false;
+		}
+		//return false;
+	}
+
 
 	//private function
 	/**
@@ -196,10 +220,22 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 	 *
 	 */
 
-	public function update_Blog($uuid, $new_data) {
+	public function update_Blog_by_uuid($uuid, $new_data) {
 		return $this->update_row($uuid, $new_data);
 	}
 
+
+	/**
+	 *	@param: $uuid: uuid used to identify it.
+	 *	@param: $new data.
+	 *
+	 *	@return bool: True on success otherwise failed.
+	 *
+	 */
+
+	public function update_Blog_by_id($id, $new_data) {
+		return $this->update_row_by_id($id, $new_data);
+	}
 	/**
 	 *	Delete an article by it's uuid.
 	 *	@param: article's uuid
@@ -209,6 +245,23 @@ class StudyingIn_Model_Blog_Dao extends Zend_Db_Table_Abstract {
 	public function delete_by_uuid($uuid) {
 
 		$where_cluster = $this->getAdapter()->quoteInto('blog_uuid =?', $uuid);
+		$row = $this->delete($where_cluster);
+		if ($row) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 *	Delete an article by it's uuid.
+	 *	@param: article's uuid
+	 *
+	 *	@return bool: True on success otherwise failed.
+	 */
+	public function delete_by_blog_id($blog) {
+
+		$where_cluster = $this->getAdapter()->quoteInto('blog_id =?', $blog['blog_id']);
 		$row = $this->delete($where_cluster);
 		if ($row) {
 			return true;
