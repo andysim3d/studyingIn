@@ -8,7 +8,7 @@
 
 require_once APPLICATION_PATH . '/utils/UUID.php';
 
-class StudyingIn_Model_Status_Dao extends Zend_Db_Table_Abstract {
+class StudyingIn_Model_User_Status_Dao extends Zend_Db_Table_Abstract {
 
 	protected $_name = "studyingIn_user_status";
 
@@ -16,12 +16,11 @@ class StudyingIn_Model_Status_Dao extends Zend_Db_Table_Abstract {
 	private function create_status($user_status) {
 
 		$row = $this->createRow();
-
 		foreach ($user_status as $key => $value) {
 			$row[$key] = $value;
 		}
 		$row['status_uuid'] = 'status-' . UUID::v4();
-		$row['status_post_date'] = date("Y-m-d H:i:s", time());
+		$row['post_date'] = date("Y-m-d H:i:s", time());
 		try {
 			$row->save();
 		} catch (Exception $e) {
@@ -190,14 +189,25 @@ class StudyingIn_Model_Status_Dao extends Zend_Db_Table_Abstract {
 
 	/**
 	 * delete status by status_id
+	 * need to add verify here.
 	 *
 	 * @param int: status_id
 	 * @return bool
 	 */
-	public function delete_status_by_status_id($status_id) {
+	public function delete_status_by_status_id($status_id, $user) {
+		$exist = $this->get_status_by_status_id($status_id)->to_array();
+		if(count($exist) == 0){
+			return false;
+		}
+		if($exist['user_id'] != $user['user_id']){
+			return false;
+		}
+
+		print_r($exist);
 
 		$where = $this->getAdapter()->quoteInto('status_id =?', $status_id);
-		return $this->delete_status($where);
+		return true;
+		//return $this->delete_status($where);
 
 	}
 

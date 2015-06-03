@@ -49,7 +49,7 @@ class StudyingIn_Model_User_Blog_Dao extends Zend_Db_Table_Abstract {
 			$row->$key = $value;
 		}
 		$row['blog_uuid'] = "blog-" . UUID::v4();
-		$row['blog_post_date'] = date("Y-m-d H:i:s", time());
+		$row['post_date'] = date("Y-m-d H:i:s", time());
 		if (!isset($row['blog_privilege'])) {
 			//1 as public,
 			//2 as only follower could read

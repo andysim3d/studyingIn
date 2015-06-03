@@ -39,10 +39,38 @@
 			// 		echo "$key => $value <br/>";
 			// 	}
 			// }
-			 print_r($articles);
+			print_r($articles);
 			exit(0);
 		}
 
+		private function __check_privilege($blog_id, $user_id = 0){
+			// $user_id = parent::$sess->user_id;
+			$blog_dao = new StudyingIn_Model_User_Blog_Dao();
+			$res = $blog_dao->get_blog_by_blog_id(new array("blog_id" => $blog_id));
+			if(count($res ) == 0){
+				return false;
+			}
+			if ($res['user_id'] == $user_id) {
+				return true;
+			}
+			return false;
+
+
+
+
+		}
+		private function __article_exist($blog_id){
+			if($blog_id == -1){
+				return false;
+			}
+			$blog_dao = new StudyingIn_Model_User_Blog_Dao();
+			$res = $blog_dao->get_blog_by_blog_id($blog);
+			if (count($res) == 0) {
+				return false;
+			}
+			else 
+				return $res;
+		}
 
 		//pass
 
@@ -76,6 +104,7 @@
 			$res = $blog_dao->get_blog_by_blog_id($blog);
 			
 			print_r($res);
+
 			exit(0);
 
 
@@ -85,7 +114,18 @@
 			//if blog_id == -1, new action
 			$blog_id = $this->getRequest()->getParam('blog_id', -1);
 			//else, edit action
+			$art = $this->__article_exist($blog_id);
+			if ( $art == false) {
+				$this->newAction();
+			}
+			else{
+				//pass $article to view
+				$article = $art;
+			}
+			exit(0);
 		}
+
+
 
 		public function editAction(){
 
